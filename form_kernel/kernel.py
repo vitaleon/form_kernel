@@ -11,7 +11,7 @@ class FormKernel(Kernel):
     banner = 'FORM kernel started'
     language_info = {'name': 'FORM',
                      'codemirror_mode': 'form',
-                     'mimetype': 'text/plain',
+                     'mimetype': 'text/x-form',
                      'file_extension': '.frm'}
 
     def __init__(self, **kwargs):
@@ -23,13 +23,19 @@ class FormKernel(Kernel):
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
-        if not code.startswith("read"):
-            self.form.write(code)
-            silent = True
-        else:
-            res = self.form.read(code[5:])
+        try:
+            if not code.startswith("read"):
+                self.form.write(code)
+                silent = True
+            else:
+                res = self.form.read(code[5:])
+                stream_content = {'name': 'stdout', 'text': res}
+        except form.FormError as e:
+            res = str(e) + '\nRestarting FORM'
+            stream_content = {'name': 'stderr', 'text': res}
+            self.__start_form()
+
         if not silent:
-            stream_content = {'name': 'stdout', 'text': res}
             self.send_response(self.iopub_socket, 'stream', stream_content)
   
         return {'status': 'ok', 'execution_count': self.execution_count,
