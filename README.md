@@ -1,6 +1,4 @@
-## Development version. Not suitable for general use.
-
-### A Jupyter kernel for [FORM](https://www.nikhef.nl/~form/)
+## A Jupyter kernel for [FORM](https://www.nikhef.nl/~form/)
 
 This requires **Jupyter Notebook** <http://jupyter.readthedocs.org/en/latest/install.html> 
 and [python-form](https://pypi.org/project/python-form/) installed.
